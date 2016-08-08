@@ -22,7 +22,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Mechanical</mainClass>
+                            <mainClass>IndexingLinks</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

@@ -14,10 +14,11 @@ import java.util.List;
 public class IndexingLinks {
     private File linkData;
     private Driver driver;
+    private String host;
 
-    public IndexingLinks(File linkData) {
+    public IndexingLinks(File linkData, String host) {
         this.linkData = linkData;
-        this.driver = GraphDatabase.driver("bolt://192.168.99.100", AuthTokens.basic("neo4j", "neo"));
+        this.driver = GraphDatabase.driver("bolt://" + host, AuthTokens.basic("neo4j", "neo4j"));
     }
 
     public void processNutchLinks() {
@@ -160,7 +161,8 @@ public class IndexingLinks {
     }
 
     public static void main(String[] args) {
-        IndexingLinks indexingLinks = new IndexingLinks(new File("link_data.txt"));
+        String host = System.getenv("NEO4J_IP");
+        IndexingLinks indexingLinks = new IndexingLinks(new File("link_data.txt"), host);
         indexingLinks.processNutchLinks();
     }
 }
