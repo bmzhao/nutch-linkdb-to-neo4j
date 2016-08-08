@@ -21,6 +21,12 @@ public class IndexingLinks {
     }
 
     public void processNutchLinks() {
+        int numLines = 0;
+        try {
+            numLines = countLines(linkData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new FileReader(linkData));
@@ -29,14 +35,13 @@ public class IndexingLinks {
         }
         String line;
         int lineNumber = 0;
+        int numLinkStructuresProcessed = 0;
+
         String currentEndLink = null;
         List<LinkAnchor> startLinks = new ArrayList<>();
         boolean inLinkTextStructure = false;
 
-
         try {
-            int numLinkStructuresProcessed = 0;
-
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
                 if (!inLinkTextStructure) {
@@ -60,12 +65,35 @@ public class IndexingLinks {
                         startLinks.add(new LinkAnchor(startLink, actualAnchorText));
                     }
                 }
+                lineNumber++;
+                System.out.println(lineNumber + "\t/\t" + numLines);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         driver.close();
+    }
+
+    private int countLines(File file) throws IOException {
+        InputStream is = new BufferedInputStream(new FileInputStream(file));
+        try {
+            byte[] c = new byte[1024];
+            int count = 0;
+            int readChars = 0;
+            boolean empty = true;
+            while ((readChars = is.read(c)) != -1) {
+                empty = false;
+                for (int i = 0; i < readChars; ++i) {
+                    if (c[i] == '\n') {
+                        ++count;
+                    }
+                }
+            }
+            return (count == 0 && !empty) ? 1 : count;
+        } finally {
+            is.close();
+        }
     }
 
     private void addEntities(List<LinkAnchor> startLinks, String endLink) {
