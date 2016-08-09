@@ -16,9 +16,9 @@ public class IndexingLinks {
     private Driver driver;
     private String host;
 
-    public IndexingLinks(File linkData, String host) {
+    public IndexingLinks(File linkData, String host, String password) {
         this.linkData = linkData;
-        this.driver = GraphDatabase.driver("bolt://" + host, AuthTokens.basic("neo4j", "neo4j"));
+        this.driver = GraphDatabase.driver("bolt://" + host, AuthTokens.basic("neo4j", password));
     }
 
     public void processNutchLinks() {
@@ -162,7 +162,8 @@ public class IndexingLinks {
 
     public static void main(String[] args) {
         String host = System.getenv("NEO4J_IP");
-        IndexingLinks indexingLinks = new IndexingLinks(new File("link_data.txt"), host);
+        String password = System.getenv("NEO4J_PASS");
+        IndexingLinks indexingLinks = new IndexingLinks(new File("link_data.txt"), host, password);
         indexingLinks.processNutchLinks();
     }
 }
